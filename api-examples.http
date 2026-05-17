@@ -1,0 +1,221 @@
+### E-Commerce API - HTTP Examples
+### Sử dụng REST Client extension trong VS Code hoặc Postman
+
+### Base URL
+@baseUrl = http://localhost:5000
+@contentType = application/json
+
+### Variables
+@adminEmail = admin@ecommerce.com
+@adminPassword = Admin@123456
+@userEmail = user@ecommerce.com
+@userPassword = User@123456
+
+### ============ AUTH ============
+
+### 1. Đăng ký User Mới
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "Nguyễn Văn B",
+  "email": "userb@example.com",
+  "password": "Password@123456"
+}
+
+### 2. Đăng nhập (Admin)
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}"
+}
+
+### 3. Đăng nhập (User)
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}"
+}
+
+### 4. Lấy Profile (Protected)
+GET {{baseUrl}}/api/auth/profile
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### 5. Cập nhật Profile
+PUT {{baseUrl}}/api/auth/profile
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: {{contentType}}
+
+{
+  "name": "Nguyễn Văn A - Updated",
+  "profilePicture": "https://example.com/avatar.jpg"
+}
+
+### 6. Lấy danh sách Users (Admin)
+GET {{baseUrl}}/api/users
+Authorization: Bearer ADMIN_TOKEN_HERE
+
+### ============ CATEGORIES ============
+
+### 7. Lấy tất cả Categories
+GET {{baseUrl}}/api/categories
+
+### 8. Tạo Category (Admin)
+POST {{baseUrl}}/api/categories
+Authorization: Bearer ADMIN_TOKEN_HERE
+Content-Type: {{contentType}}
+
+{
+  "name": "Điện tử tiêu dùng",
+  "description": "Các thiết bị điện tử tiêu dùng",
+  "image": "https://via.placeholder.com/200?text=Electronics"
+}
+
+### 9. Cập nhật Category (Admin)
+PUT {{baseUrl}}/api/categories/CATEGORY_ID_HERE
+Authorization: Bearer ADMIN_TOKEN_HERE
+Content-Type: {{contentType}}
+
+{
+  "name": "Điện tử tiêu dùng - Updated",
+  "description": "Các thiết bị điện tử tiêu dùng cập nhật"
+}
+
+### 10. Xóa Category (Admin)
+DELETE {{baseUrl}}/api/categories/CATEGORY_ID_HERE
+Authorization: Bearer ADMIN_TOKEN_HERE
+
+### ============ PRODUCTS ============
+
+### 11. Lấy danh sách Products (có filter, pagination)
+GET {{baseUrl}}/api/products
+GET {{baseUrl}}/api/products?category=CATEGORY_ID&minPrice=1000000&maxPrice=50000000&search=iPhone&page=1&limit=10
+
+### 12. Lấy chi tiết Product
+GET {{baseUrl}}/api/products/PRODUCT_ID_HERE
+
+### 13. Tạo Product (Admin)
+POST {{baseUrl}}/api/products
+Authorization: Bearer ADMIN_TOKEN_HERE
+Content-Type: {{contentType}}
+
+{
+  "name": "Samsung Galaxy A50",
+  "description": "Điện thoại mid-range chất lượng cao",
+  "price": 7990000,
+  "stock": 100,
+  "category": "CATEGORY_ID_HERE",
+  "images": ["https://via.placeholder.com/400?text=Galaxy+A50"]
+}
+
+### 14. Cập nhật Product (Admin)
+PUT {{baseUrl}}/api/products/PRODUCT_ID_HERE
+Authorization: Bearer ADMIN_TOKEN_HERE
+Content-Type: {{contentType}}
+
+{
+  "name": "Samsung Galaxy A50 - Updated",
+  "price": 7490000,
+  "stock": 80
+}
+
+### 15. Xóa Product (Admin)
+DELETE {{baseUrl}}/api/products/PRODUCT_ID_HERE
+Authorization: Bearer ADMIN_TOKEN_HERE
+
+### ============ CART ============
+
+### 16. Lấy Giỏ hàng
+GET {{baseUrl}}/api/cart
+Authorization: Bearer USER_TOKEN_HERE
+
+### 17. Thêm sản phẩm vào Giỏ
+POST {{baseUrl}}/api/cart/add
+Authorization: Bearer USER_TOKEN_HERE
+Content-Type: {{contentType}}
+
+{
+  "productId": "PRODUCT_ID_HERE",
+  "quantity": 2
+}
+
+### 18. Cập nhật số lượng sản phẩm trong Giỏ
+PUT {{baseUrl}}/api/cart/update
+Authorization: Bearer USER_TOKEN_HERE
+Content-Type: {{contentType}}
+
+{
+  "productId": "PRODUCT_ID_HERE",
+  "quantity": 5
+}
+
+### 19. Xóa sản phẩm khỏi Giỏ
+DELETE {{baseUrl}}/api/cart/remove/PRODUCT_ID_HERE
+Authorization: Bearer USER_TOKEN_HERE
+
+### 20. Làm rỗng Giỏ hàng
+DELETE {{baseUrl}}/api/cart/clear
+Authorization: Bearer USER_TOKEN_HERE
+
+### ============ ORDERS ============
+
+### 21. Tạo Đơn hàng
+POST {{baseUrl}}/api/orders
+Authorization: Bearer USER_TOKEN_HERE
+Content-Type: {{contentType}}
+
+{
+  "shippingAddress": "123 Nguyễn Hue, Quận 1, TP.HCM",
+  "phone": "0912345678"
+}
+
+### 22. Lấy danh sách Đơn hàng của User
+GET {{baseUrl}}/api/orders
+Authorization: Bearer USER_TOKEN_HERE
+
+### 23. Lấy chi tiết Đơn hàng
+GET {{baseUrl}}/api/orders/ORDER_ID_HERE
+Authorization: Bearer USER_TOKEN_HERE
+
+### 24. Cập nhật trạng thái Đơn hàng (Admin)
+PUT {{baseUrl}}/api/orders/ORDER_ID_HERE/status
+Authorization: Bearer ADMIN_TOKEN_HERE
+Content-Type: {{contentType}}
+
+{
+  "status": "processing"
+}
+
+### Trạng thái hợp lệ: pending, processing, shipped, delivered
+
+### ============ REVIEWS ============
+
+### 25. Tạo Review cho sản phẩm
+POST {{baseUrl}}/api/products/PRODUCT_ID_HERE/reviews
+Authorization: Bearer USER_TOKEN_HERE
+Content-Type: {{contentType}}
+
+{
+  "rating": 5,
+  "comment": "Sản phẩm rất tuyệt vời! Chất lượng tốt và giao hàng nhanh."
+}
+
+### 26. Lấy danh sách Reviews của sản phẩm
+GET {{baseUrl}}/api/products/PRODUCT_ID_HERE/reviews
+
+### ============ HEALTH CHECK ============
+
+### 27. Kiểm tra Server
+GET {{baseUrl}}/health
+
+### ============ NOTES ============
+
+# 1. Thay thế TOKEN_HERE, PRODUCT_ID_HERE, ORDER_ID_HERE bằng ID thực tế
+# 2. Yêu cầu MongoDB đang chạy trên localhost:27017
+# 3. Sử dụng REST Client extension hoặc copy paste vào Postman
+# 4. Swagger UI: http://localhost:5000/api-docs
+# 5. GraphQL: http://localhost:5000/graphql
